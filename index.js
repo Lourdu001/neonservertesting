@@ -13,28 +13,14 @@ const PORT = process.env.PORT || 3001;
 const pool = new Pool({
   connectionString: DB,
   ssl: {
-    rejectUnauthorized: false, // Required for Neon
+    rejectUnauthorized: false, 
   },
 });
 
-const initDb = async () => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS test_table (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL
-      );
-    `);
-    await pool.query(`INSERT INTO test_table (name) VALUES ('NeonTestUser') RETURNING *;`);
-    console.log("Table initialized and record inserted.");
-  } catch (err) {
-    console.error("DB Initialization Error:", err);
-  }
-};
 
 app.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM test_table;");
+    const result = await pool.query("SELECT * FROM samplejson;");
     res.json(result.rows);
   } catch (err) {
     console.error("Query Error:", err);
@@ -44,5 +30,4 @@ app.get("/", async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-  initDb();
 });
